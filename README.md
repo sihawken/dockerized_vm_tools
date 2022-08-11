@@ -35,3 +35,12 @@ You can edit the XML files in the container with this simple script.
 
 - `sudo chmod +x Virsh_Edit_XML.sh`
 - `./Virsh_Edit_XML.sh`
+
+### Edit XML Manually
+
+The XML files can be found in run/qemu_xml/. Since it is easy to access this way, you can manually edit or add any new xml files here.
+
+If a new .xml is added, or an edited .xml is no longer listed on the list of VMs, the following scripts need to be run:
+
+- `sudo chmod +x Virst_Define_New_XML.sh`
+- `./Virst_Define_New_XML.sh`
