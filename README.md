@@ -1,6 +1,8 @@
 # Dockerized QEMU/Libvirt/Looking-Glass/Scream
 
-An eas[y/ier] way to set up QEMU/Libvirt/Looking-Glass/Scream with VFIO passthrough. This image can connect directly to your x session (or xWayland session) via cookie it adds to your host system. It can also play audio directly on your host system by passing an ALSA audio device created by pulseaudio or pipewire.
+An eas[y/ier] way to set up QEMU/Libvirt/Looking-Glass/Scream with VFIO passthrough. 
+
+This image and these scripts can connect directly to your x session (or xWayland session) via cookie it adds to your host system. It can also play audio directly on your host system by passing an ALSA audio device created by pulseaudio or pipewire.
 
 ## Build and Start the Environment
 
@@ -20,4 +22,5 @@ The container named "vm" should now successfully be running.
 
 This image has virt-manager on it. Start virt-manager by the following commands:
 
-Add your XML files to /run/
+- `sudo chmod +x Start_Virt-Manager.sh`
+- `./Start_Virt-Manager.sh`
