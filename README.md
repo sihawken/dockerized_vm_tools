@@ -4,6 +4,8 @@ An eas[y/ier] way to set up QEMU/Libvirt/Looking-Glass/Scream with VFIO passthro
 
 This image and these scripts can connect directly to your x session (or xWayland session) via cookie it adds to your host system. It can also play audio directly on your host system by passing an ALSA audio device created by pulseaudio or pipewire.
 
+These scripts are still far from perfect, and there are a lot of improvements that can be made to make setting up this environment easier! Pull requests are welcome.
+
 ## Build and Start the Environment
 
 This requires a linux OS. These scripts were tested and functional for me on Pop! OS, however given the nature of docker this should function on most distributions.
@@ -19,6 +21,12 @@ You must have docker installed. Build and start the environment with the followi
 The container named "vm" should now successfully be running.
 
 ## Setting Up a VM
+
+The images that run in this environment have a few requirements.
+
+- The shared looking-glass memory must be named win10-looking-glass
+- You must install Looking-Glass version B5.0.1 in the Windows guest
+- You must install Scream version 3.9 in the Windows guest.
 
 ### Virt-Manager
 
