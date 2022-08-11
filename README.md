@@ -37,6 +37,8 @@ This image has virt-manager on it. Start virt-manager by the following commands:
 - `sudo chmod +x Start_Virt-Manager.sh`
 - `./Start_Virt-Manager.sh`
 
+An example XML file can be found at example_xml/win10_rtx3060_muxless.xml, which is the configuration I personally use.
+
 XML editing is not functional at this time in Virt-Manager for reasons I cannot determine. However, there is another script that will allow you to edit an xml file via the nano editor.
 
 ### Virsh Edit XML
@@ -58,3 +60,29 @@ If a new .xml is added, or an edited .xml is no longer listed on the list of VMs
 ### Libvirt Hooks
 
 The hooks directory can be found at run/hooks/. This directory is mapped to /etc/libvirt/hooks/ inside the container. I recommend setting up https://github.com/PassthroughPOST/VFIO-Tools/blob/master/libvirt_hooks/qemu to make hooks easier.
+
+You may need to make the hooks executable with a +x flag, such as the following for the VFIO-Tools scripts:
+
+- `sudo chmod +x run/hooks/qemu && sudo chmod -R +x run/hooks/qemu.d`
+
+### Fake Battery
+
+Fake battery data can be found in /run/acpi/SSDT1.dat. This is mapped inside the container Adding a fake battery to windows can sometimes be necessary for Nvidia drivers to start-up without the dreaded Code 43.
+
+# Running a VM
+
+Once the previous steps have been done, running and viewing the display from a VM should be easy (assuming your XML and image are properly configured for your device).
+
+- `sudo chmod +x Start_VM.sh`
+- `./Start_VM.sh`
+
+Select a VM which you have previously defined. It will attempt to start it up. Alternatively you can start the VM with Virt-Manager.
+
+Lastly, you just need to start Looking-Glass.
+
+- `sudo chmod +x Start_Looking-Glass.sh`
+- `./Start_Looking-Glass.sh`
+
+You should now have a display of your PC!
+
+
