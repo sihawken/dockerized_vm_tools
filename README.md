@@ -42,5 +42,5 @@ The XML files can be found in run/qemu_xml/. Since it is easy to access this way
 
 If a new .xml is added, or an edited .xml is no longer listed on the list of VMs, the following scripts need to be run:
 
-- `sudo chmod +x Virst_Define_New_XML.sh`
-- `./Virst_Define_New_XML.sh`
+- `sudo chmod +x Virsh_Define_XML.sh`
+- `./Virsh_Define_XML.sh`
