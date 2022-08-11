@@ -67,7 +67,7 @@ You may need to make the hooks executable with a +x flag, such as the following 
 
 ### Fake Battery
 
-Fake battery data can be found in /run/acpi/SSDT1.dat. This is mapped inside the container Adding a fake battery to windows can sometimes be necessary for Nvidia drivers to start-up without the dreaded Code 43.
+Fake battery data can be found in /run/acpi/SSDT1.dat. This is mapped inside the container Adding a fake battery to windows can sometimes be necessary for Nvidia drivers to start-up without the dreaded Code 43. View the example configs to see how I pass the fake battery data to Windows.
 
 # Running a VM
 
@@ -83,6 +83,4 @@ Lastly, you just need to start Looking-Glass.
 - `sudo chmod +x Start_Looking-Glass.sh`
 - `./Start_Looking-Glass.sh`
 
-You should now have a display of your PC!
-
-
+You should now have a display of your VM, with sound output.
