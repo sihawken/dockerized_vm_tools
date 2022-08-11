@@ -24,9 +24,11 @@ The container named "vm" should now successfully be running.
 
 The images that run in this environment have a few requirements.
 
-- The shared looking-glass memory must be named win10-looking-glass
+- The shared Looking-Glass memory device must be named win10-looking-glass
 - You must install Looking-Glass version B5.0.1 in the Windows guest
 - You must install Scream version 3.9 in the Windows guest.
+
+Only one VM can run at a time. Feel free to modify the environment for your own purposes if you plan on running multiple VMs at once.
 
 ### Virt-Manager
 
