@@ -4,5 +4,6 @@ drive_images/*
 !drive_images/README.md
 run/extras/*
 run/qemu_xml/*
+run/qemu_xml/README.md
 run/hooks/*
 !run/hooks/README.md
