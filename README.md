@@ -54,3 +54,7 @@ If a new .xml is added, or an edited .xml is no longer listed on the list of VMs
 
 - `sudo chmod +x Virsh_Define_XML.sh`
 - `./Virsh_Define_XML.sh`
+
+### Libvirt Hooks
+
+The hooks directory can be found at run/hooks/. This directory is mapped to /etc/libvirt/hooks/ inside the container. I recommend setting up https://github.com/PassthroughPOST/VFIO-Tools/blob/master/libvirt_hooks/qemu to make hooks easier.

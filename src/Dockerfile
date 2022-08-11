@@ -66,10 +66,6 @@ RUN apt-get -qq update -y && \
     apt-get -qq install -y libxss1 libxpresent1 libegl1 libgl1 && \
     rm -rf /var/lib/apt/lists
 
-# Add VFIO libvirt hooks utility
-RUN wget 'https://raw.githubusercontent.com/PassthroughPOST/VFIO-Tools/master/libvirt_hooks/qemu' -O /etc/libvirt/hooks/qemu && \
-    chmod +x /etc/libvirt/hooks/qemu
-
 # Generating a universally unique ID for the Container
 RUN  dbus-uuidgen > /etc/machine-id
 

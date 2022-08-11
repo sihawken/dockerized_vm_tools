@@ -1,1 +1,1 @@
-Add your QEMU hooks here! By default, this uses: https://raw.githubusercontent.com/PassthroughPOST/VFIO-Tools/master/libvirt_hooks/qemu
+Add your QEMU hooks here! I recommend using https://github.com/PassthroughPOST/VFIO-Tools/blob/master/libvirt_hooks/qemu to make hooks easier.
