@@ -18,9 +18,20 @@ You must have docker installed. Build and start the environment with the followi
 
 The container named "vm" should now successfully be running.
 
-## Setting up a VM
+## Setting Up a VM
+
+### Virt-Manager
 
 This image has virt-manager on it. Start virt-manager by the following commands:
 
 - `sudo chmod +x Start_Virt-Manager.sh`
 - `./Start_Virt-Manager.sh`
+
+XML editing is not functional at this time in Virt-Manager for reasons I cannot determine. However, there is another script that will allow you to edit an xml file via the nano editor.
+
+### Virsh Edit XML
+
+You can edit the XML files in the container with this simple script.
+
+- `sudo chmod +x Virsh_Edit_XML.sh`
+- `./Virsh_Edit_XML.sh`
