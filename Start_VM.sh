@@ -47,4 +47,4 @@ else
 fi
 
 echo "Closing in 5 seconds..."
-sleep 5
+sleep 999
