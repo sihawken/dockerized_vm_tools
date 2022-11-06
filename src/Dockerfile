@@ -1,30 +1,35 @@
-FROM debian:bullseye-slim AS prepimage
+FROM debian:bookworm-slim AS prepimage
 
-ENV LOOKING_GLASS_VER="B5.0.1"
-ENV SCREAM_VER="3.9"
-ENV QEMU_VER="7.1.0"
-ENV TINI_VERSION="v0.19.0"
+# Software versions
+ENV LOOKING_GLASS_VER="B5.0.1" \
+    SCREAM_VER="3.9" \
+    QEMU_VER="7.1.0" \
+    LIBVIRT_VER="8.9.0" \
+    VIRTMNGR_VER="4.1.0" \
+    TINI_VER="v0.19.0"
 
+# Routine dockerfile commands
 RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get -qq update -y && \
-    apt-get install locales -y --no-install-recommends
-
+#
 # Setting up the locales
-RUN echo 'en_US ISO-8859-1' >> /etc/locale.gen && \
+    apt-get -qq update -y && \
+    apt-get install locales -y --no-install-recommends && \
+    echo 'en_US ISO-8859-1' >> /etc/locale.gen && \
     echo 'en_US.ISO-8859-15 ISO-8859-15' >> /etc/locale.gen && \
     echo 'en_US.UTF-8 UTF-8' >> /etc/locale.gen && \
     locale-gen
 
 FROM prepimage AS buildimage
-
-RUN apt-get -qq update -y && \
-    apt-get -qq install -y binutils-dev fonts-dejavu-core cmake libfontconfig-dev gcc g++ pkg-config libegl-dev libgl-dev libgles-dev libspice-protocol-dev nettle-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxpresent-dev libxss-dev libxkbcommon-dev libwayland-dev wayland-protocols wget gnupg gcc time ca-certificates python3 ninja-build libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev
+    
+# Install common build packages
+RUN apt-get -qq install -y binutils-dev fonts-dejavu-core cmake libfontconfig-dev gcc g++ pkg-config libegl-dev libgl-dev libgles-dev libspice-protocol-dev nettle-dev libx11-dev libxcursor-dev libxi-dev libxinerama-dev libxpresent-dev libxss-dev libxkbcommon-dev libwayland-dev wayland-protocols wget gnupg gcc time ca-certificates python3
     
 FROM buildimage AS qemu_buildimage
 
-RUN apt-get -qq install -y libspice-protocol-dev libspice-server-dev libusb-1.0-0-dev libusbredirparser-dev
+# Install required packages to build qemu
+RUN apt-get -qq install -y ninja-build libglib2.0-dev libfdt-dev libpixman-1-dev zlib1g-dev libspice-protocol-dev libspice-server-dev libusb-1.0-0-dev libusbredirparser-dev
 
-# Compile the binaries
+# Download and compile the qemu binaries
 RUN wget https://download.qemu.org/qemu-${QEMU_VER}.tar.xz && \
     tar xvJf qemu-${QEMU_VER}.tar.xz && \
     mkdir /qemu-${QEMU_VER}/build/ && \
@@ -39,7 +44,7 @@ RUN mkdir -p /tmp/qemu-${QEMU_VER}_builded/DEBIAN && \
     echo "Package: qemu\nVersion:${QEMU_VER}\nArchitecture: $ARCH\nMaintainer: $MAINTAINER\nDescription: Custom qemu\nDepends: seabios, ipxe-qemu, libfdt1, libspice-server1\nRecommends: ovmf\nProvides: qemu-kvm, qemu-utils, qemu-system-i386, qemu-system-x86, qemu-system-x86-64" > /tmp/qemu-${QEMU_VER}_builded/DEBIAN/control && \
     cat /tmp/qemu-${QEMU_VER}_builded/DEBIAN/control && \
     dpkg-deb --build --root-owner-group /tmp/qemu-${QEMU_VER}_builded
-    
+
 FROM buildimage AS looking_glass_buildimage
 
 # Download looking glass
@@ -49,7 +54,7 @@ RUN tar -xvf looking-glass-${LOOKING_GLASS_VER}.tar.gz && \
     cd looking-glass-${LOOKING_GLASS_VER}/client/ && \
     mkdir build && \
     cd build && \
-    cmake -j`nproc` ../ && \
+    cmake ../ && \
     make -j`nproc`
     
 FROM buildimage AS scream_buildimage
@@ -64,7 +69,7 @@ RUN tar -xvf scream-${SCREAM_VER}.tar.gz && \
     cd scream-${SCREAM_VER}/Receivers/unix && \
     mkdir build && \
     cd build && \
-    cmake -j`nproc` ../ && \
+    cmake ../ && \
     make -j`nproc`
     
 FROM prepimage AS runimage
@@ -72,27 +77,36 @@ FROM prepimage AS runimage
 # Copy the built qemu binaries to the running image
 COPY --from=qemu_buildimage /tmp/qemu-${QEMU_VER}_builded.deb qemu-${QEMU_VER}.deb
 
-# Installing the required packages for the built QEMU
+    # Installing the required packages for the built QEMU
 RUN apt-get -qq update -y && \
-    apt-get -qq install -y --no-install-recommends seabios ipxe-qemu libfdt1 libspice-server1
-
-# Install binaries
-RUN dpkg -i qemu-${QEMU_VER}.deb && \
+    apt-get -qq install -y --no-install-recommends seabios ipxe-qemu libfdt1 libspice-server1 && \
+    #
+    # Install binaries
+    dpkg -i qemu-${QEMU_VER}.deb && \
     rm -rf /qemu-${QEMU_VER}.deb && \
-    apt-get -qq install -y --no-install-recommends -o Dpkg::Options::="--force-overwrite" ovmf
-
-# Setting up base operating system
-RUN export DEBIAN_FRONTEND=noninteractive && \
-    apt-get -qq install -y --no-install-recommends apt-utils gnupg time nano dnsmasq supervisor axel xauth && \
-    apt-get -qq install -y libxss1 libxpresent1 libegl1 libgl1
+    apt-get -qq install -y --no-install-recommends -o Dpkg::Options::="--force-overwrite" ovmf && \
+    #
+    # Packages for the base operating system
+    apt-get -qq install -y --no-install-recommends apt-utils gnupg time nano geany dnsmasq supervisor axel xauth && \
+    #
+    # Packages for the x environment
+    apt-get -qq install -y libxss1 libxpresent1 libegl1 libgl1 && \
+    #
+    # 
+    apt-get -qq install -y libvirt-clients libvirt-daemon-system virtinst libvirt-daemon 
     
 # Add Tini init system
-ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /usr/bin/tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VER}/tini /usr/bin/tini
 RUN chmod +x /usr/bin/tini
 
 # Installing the extra virtualisation packages and pulseaudio for scream
-RUN apt-get -qq install -y --no-install-recommends libvirt-daemon libvirt-daemon-system libvirt-clients libguestfs-tools libosinfo-bin bridge-utils virt-manager virtinst ovmf gir1.2-spiceclientgtk-3.0 && \
-    apt-get -qq install -y pulseaudio && \
+RUN apt-get -qq install -y --no-install-recommends libguestfs-tools libosinfo-bin bridge-utils ovmf gir1.2-spiceclientgtk-3.0 && \
+    apt-get -qq install -y pulseaudio
+
+# Install virt manager    
+RUN apt-get install -y virt-manager && \
+#
+# Remove any remaining packages
     rm -rf /var/lib/apt/lists
 
 # Creating .Xauthority file to forward x session to host
